@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
+import Dashboard from "../pages/Dashboard";
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({
@@ -59,40 +60,53 @@ const LoginForm = () => {
 
   return (
     <div>
-      <Box margin={25} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-        <form noValidate validated={validated} onSubmit={handleFormSubmit}>
-          <TextField
-            required
-            fullWidth
-            label="Username"
-            name="username"
-            value={userFormData.username}
-            onChange={handleInputChange}
-            style={{marginBottom: '5px'}}
-          />
-          <TextField
-            required
-            fullWidth
-            label="Password"
-            name="password"
-            value={userFormData.password}
-            onChange={handleInputChange}
-            style={{marginBottom: '5px'}}
-          />
-          {showAlert && (
-            <Alert severity="error">An error occurred. Please try again.</Alert>
-          )}
-          <Button type="submit" variant="contained" color="primary">
-            Login
-          </Button>
-        </form>
-        <Typography variant="body2" align="center" mt={2}>
-          Not a user?{" "}
-          <Link href="/signup" color="primary">
-            Sign up instead.
-          </Link>
-        </Typography>
-      </Box>
+      {Auth.loggedIn() ? (
+        <Dashboard />
+      ) : (
+        <Box
+          margin={25}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <form noValidate validated={validated} onSubmit={handleFormSubmit}>
+            <TextField
+              required
+              fullWidth
+              label="Username"
+              name="username"
+              value={userFormData.username}
+              onChange={handleInputChange}
+              style={{ marginBottom: "5px" }}
+            />
+            <TextField
+              required
+              fullWidth
+              label="Password"
+              name="password"
+              value={userFormData.password}
+              onChange={handleInputChange}
+              style={{ marginBottom: "5px" }}
+            />
+            {showAlert && (
+              <Alert severity="error">
+                An error occurred. Please try again.
+              </Alert>
+            )}
+            <Button type="submit" variant="contained" color="primary">
+              Login
+            </Button>
+          </form>
+          <Typography variant="body2" align="center" mt={2}>
+            Not a user?{" "}
+            <Link href="/signup" color="primary">
+              Sign up instead.
+            </Link>
+          </Typography>
+        </Box>
+      )}
     </div>
   );
 };

@@ -15,18 +15,19 @@ import Auth from '../utils/auth';
 
 const Dashboard = () => {
     const { loading, data } = useQuery(QUERY_USER);
-    // const [removePosition, { err }] = useMutation(REMOVE_POSITION);
-    // const [savePosition, { error }] = useMutation(SAVE_POSITION);
-    // const [userPositions, setUserPositions] = useState([])
-    // const [userFormInput, setUserFormInput] = useState({
-    //     purchaseDate: '',
-    //     purchasePrice: 0.00,
-    //     symbol: '',
-    //     purchaseQty: 0.00
-    // });
+    const [loggedIn, setLoggedIn] = useState(Auth.loggedIn())
+    const [removePosition, { err }] = useMutation(REMOVE_POSITION);
+    const [savePosition, { error }] = useMutation(SAVE_POSITION);
+    const [userPositions, setUserPositions] = useState([])
+    const [userFormInput, setUserFormInput] = useState({
+        purchaseDate: '',
+        purchasePrice: 0.00,
+        symbol: '',
+        purchaseQty: 0.00
+    });
     
 
-    const userData = data?.user || {};
+    const userData = data?.user || "userData not found";
     console.log(userData)
 
     // useEffect(() => {
