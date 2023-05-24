@@ -14,7 +14,7 @@ import { SAVE_POSITION } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 const Dashboard = () => {
-    const { loading, data } = useQuery(QUERY_USER);
+    const { loading, e, data } = useQuery(QUERY_USER);
     const [loggedIn, setLoggedIn] = useState(Auth.loggedIn())
     const [removePosition, { err }] = useMutation(REMOVE_POSITION);
     const [savePosition, { error }] = useMutation(SAVE_POSITION);
@@ -67,6 +67,10 @@ const Dashboard = () => {
 
     if (loading) {
         return <h2>LOADING...</h2>
+    }
+
+    if (e) {
+        return `Error! ${e.message}`
     }
 
   return (

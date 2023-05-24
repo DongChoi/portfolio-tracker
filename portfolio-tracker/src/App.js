@@ -13,7 +13,7 @@ import "./App.css";
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import NavBar from "./components/NavBar";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 
 const httpLink = createHttpLink({
   uri: "graphql",
