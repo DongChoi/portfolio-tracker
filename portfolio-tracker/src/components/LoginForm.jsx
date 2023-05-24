@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // import form dependencies from mui
-import TextField from '@mui/material/TextField'
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert'
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth'
@@ -51,7 +53,30 @@ const LoginForm = () => {
 
   return (
     <div>
-      
+        <form noValidate validated={validated} onSubmit={handleFormSubmit}>
+            <TextField
+                required
+                fullWidth
+                label='Username'
+                name='username'
+                value={userFormData.username}
+                onChange={handleInputChange}
+            />
+            <TextField
+                required
+                fullWidth
+                label='Password'
+                name='password'
+                value={userFormData.password}
+                onChange={handleInputChange} 
+            />
+            {showAlert && (
+                <Alert severity='error'>An error occurred. Please try again.</Alert>
+            )}
+            <Button type='submit' variant='contained' color='primary'>
+                Login
+            </Button>
+        </form>
     </div>
   )
 }
