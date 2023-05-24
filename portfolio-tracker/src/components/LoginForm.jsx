@@ -68,6 +68,7 @@ const LoginForm = () => {
             name="username"
             value={userFormData.username}
             onChange={handleInputChange}
+            style={{marginBottom: '5px'}}
           />
           <TextField
             required
@@ -76,6 +77,7 @@ const LoginForm = () => {
             name="password"
             value={userFormData.password}
             onChange={handleInputChange}
+            style={{marginBottom: '5px'}}
           />
           {showAlert && (
             <Alert severity="error">An error occurred. Please try again.</Alert>

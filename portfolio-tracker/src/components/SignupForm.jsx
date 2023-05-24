@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import { useMutation } from "@apollo/client";
-import { ADD_USER } from "../utils/auth";
+import { ADD_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
 
 const SignupForm = () => {
@@ -17,7 +17,7 @@ const SignupForm = () => {
   });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [ADD_USER, { error }] = useMutation(ADD_USER);
+  const [addUser, { error }] = useMutation(ADD_USER);
 
   useEffect(() => {
     if (error) {
@@ -41,7 +41,7 @@ const SignupForm = () => {
     }
 
     try {
-      const { data } = await ADD_USER({
+      const { data } = await addUser({
         variables: { ...userFormData },
       });
       console.log(data);
@@ -74,6 +74,7 @@ const SignupForm = () => {
             name="username"
             value={userFormData.username}
             onChange={handleInputChange}
+            style={{marginBottom: '5px'}}
           />
           <TextField
             required
@@ -82,6 +83,7 @@ const SignupForm = () => {
             name="email"
             value={userFormData.email}
             onChange={handleInputChange}
+            style={{marginBottom: '5px'}}
           />
           <TextField
             required
@@ -90,6 +92,7 @@ const SignupForm = () => {
             name="password"
             value={userFormData.password}
             onChange={handleInputChange}
+            style={{marginBottom: '5px'}}
           />
           {showAlert && (
             <Alert severity="error">An error occurred. Please try again.</Alert>
