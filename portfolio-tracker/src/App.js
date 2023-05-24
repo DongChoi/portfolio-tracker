@@ -15,8 +15,6 @@ import SignupForm from "./components/SignupForm";
 import NavBar from "./components/NavBar";
 import Dashboard from "./pages/Dashboard";
 
-// import { AuthProvider } from "./context/AuthContext";
-
 const httpLink = createHttpLink({
   uri: "graphql",
 });
@@ -37,7 +35,6 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      {/* <AuthProvider> */}
         <Router>
           <>
             <NavBar />
@@ -48,7 +45,6 @@ function App() {
             </Routes>
           </>
         </Router>
-      {/* </AuthProvider> */}
     </ApolloProvider>
   );
 }

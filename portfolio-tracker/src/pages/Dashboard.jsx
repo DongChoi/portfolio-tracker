@@ -6,18 +6,14 @@
     // table of all user positions
     // etc.
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_USER } from '../utils/queries';
 import { REMOVE_POSITION } from '../utils/mutations';
 import { SAVE_POSITION } from '../utils/mutations';
 import Auth from '../utils/auth';
-import { AuthContext } from '../context/AuthContext';
-import AuthService from '../utils/auth';
-// import { useEffect } from 'react';
 
 const Dashboard = () => {
-    // const { isAuthenticated, login, logout } = useContext(AuthContext)
     const { loading, data } = useQuery(QUERY_USER);
     // const [removePosition, { err }] = useMutation(REMOVE_POSITION);
     // const [savePosition, { error }] = useMutation(SAVE_POSITION);
@@ -74,7 +70,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      {AuthService.loggedIn() ? (
+      {Auth.loggedIn() ? (
         <h1>you are authenticated {userData.username}</h1>
       ) : (
         <h1>you are not authenticated</h1>
