@@ -6,12 +6,13 @@ export const QUERY_USER = gql`
             _id
             username
             email
+            positionCount
             positions {
                 positionId
                 purchaseDate
                 purchasePrice
                 symbol
-                currentPrice
+                purchaseQty
             }
         }
     }

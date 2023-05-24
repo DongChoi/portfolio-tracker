@@ -12,10 +12,10 @@ const NavBar = () => {
     const isLoggedIn = AuthService.loggedIn();
   return (
     <AppBar position='static' style={{backgroundColor: 'white', boxShadow: 'none', paddingTop: '20px'}}>
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: 'space-between'}}>
             <img src={brand} alt="Andrews Investment Tracking logo" style={{ marginRight: '10px', width: '100px', height: '100px' }} />
             {isLoggedIn && (
-                <Button color='inherit' onClick={handleLogout}>
+                <Button variant='contained' color='primary' onClick={handleLogout}>
                     Logout
                 </Button>
             )}

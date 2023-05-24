@@ -12,7 +12,7 @@ const typeDefs = gql`
     purchaseDate: String!
     purchasePrice: Float!
     symbol: String!
-    currentPrice: Float!
+    purchaseQty: Float!
   }
   type Auth {
     token: ID!
@@ -25,10 +25,10 @@ const typeDefs = gql`
     login(username: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
     savePosition(
-      purchaseDate: String!
-      purchasePrice: Float!
-      symbol: String!
-      currentPrice: Float!
+      purchaseDate: String!,
+      purchasePrice: Float!,
+      symbol: String!,
+      purchaseQty: Float!
     ): User
     removePosition(positionId: ID!): User
   }
