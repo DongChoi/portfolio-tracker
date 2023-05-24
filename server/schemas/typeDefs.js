@@ -12,7 +12,7 @@ const typeDefs = gql`
     purchaseDate: String!
     purchasePrice: Float!
     symbol: String!
-    currentPrice: Float!
+    purchaseQty: Float!
   }
   type Auth {
     token: ID!
@@ -28,7 +28,7 @@ const typeDefs = gql`
       purchaseDate: String!
       purchasePrice: Float!
       symbol: String!
-      currentPrice: Float!
+      purchaseQty: Float!
     ): User
     removePosition(positionId: ID!): User
   }

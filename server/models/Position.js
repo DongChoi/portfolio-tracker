@@ -14,7 +14,7 @@ const positionSchema = new Schema({
     type: String,
     required: true,
   },
-  currentPrice: {
+  purchaseQty: {
     type: Schema.Types.Decimal128,
     required: true,
   },
