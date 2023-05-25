@@ -42,12 +42,12 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    savePosition: async (parent, { ...position }, context) => {
+    savePosition: async (parent, { purchaseDate, purchasePrice, symbol, purchaseQty }, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
           //push into positions data
-          { $push: { positions: { positionId: uuid(), position } } },
+          { $push: { positions: { positionId: uuid(), purchaseDate: purchaseDate, purchasePrice: parseFloat(purchasePrice), symbol: symbol, purchaseQty: parseFloat(purchaseQty) } } },
           //returns updated or "new" object
           { new: true }
         );
