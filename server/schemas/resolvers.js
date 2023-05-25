@@ -1,7 +1,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
-
+// const uuid = require("uuid/v1");
 const resolvers = {
   Query: {
     /*parent: represents  our application,
@@ -47,7 +47,7 @@ const resolvers = {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
           //push into positions data
-          { $push: { positions: position } },
+          { $push: { positions: { positionId: uuid(), position } } },
           //returns updated or "new" object
           { new: true }
         );

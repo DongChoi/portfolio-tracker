@@ -1,16 +1,16 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const LOGIN_USER = gql`
-    mutation login($username: String!, $password: String!) {
-        login(username: $username, password: $password) {
-            token
-            user {
-                _id
-                username
-            }
-        }
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      token
+      user {
+        _id
+        username
+      }
     }
-`
+  }
+`;
 
 export const ADD_USER = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
@@ -25,35 +25,45 @@ export const ADD_USER = gql`
 `;
 
 export const SAVE_POSITION = gql`
-  mutation savePosition($purchaseDate: String!, $purchasePrice: Float!, $symbol: String!, $currentPrice: Float!) {
-    savePosition(purchaseDate: $purchaseDate, purchasePrice: $purchasePrice, symbol: $symbol, currentPrice: $currentPrice) {
-        _id
-        username
-        email
-        positions {
-            positionId
-            purchaseDate
-            purchasePrice
-            symbol
-            currentPrice
-        }
+  mutation savePosition(
+    $purchaseDate: String!
+    $purchasePrice: Float!
+    $symbol: String!
+    $purchaseQty: Float!
+  ) {
+    savePosition(
+      purchaseDate: $purchaseDate
+      purchasePrice: $purchasePrice
+      symbol: $symbol
+      purchaseQty: $purchaseQty
+    ) {
+      _id
+      username
+      email
+      positions {
+        positionId
+        purchaseDate
+        purchasePrice
+        symbol
+        purchaseQty
+      }
     }
   }
-`
+`;
 
 export const REMOVE_POSITION = gql`
   mutation removePosition($positionId: ID!) {
     removePosition(positionId: $positionId) {
-        _id
-        username
-        email
-        positions {
-            positionId
-            purchaseDate
-            purchasePrice
-            symbol
-            currentPrice
-        }
+      _id
+      username
+      email
+      positions {
+        positionId
+        purchaseDate
+        purchasePrice
+        symbol
+        purchaseQty
+      }
     }
   }
-`
+`;

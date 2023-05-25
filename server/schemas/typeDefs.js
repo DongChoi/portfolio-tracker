@@ -25,9 +25,9 @@ const typeDefs = gql`
     login(username: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
     savePosition(
-      purchaseDate: String!,
-      purchasePrice: Float!,
-      symbol: String!,
+      purchaseDate: String!
+      purchasePrice: Float!
+      symbol: String!
       purchaseQty: Float!
     ): User
     removePosition(positionId: ID!): User
