@@ -6,6 +6,21 @@
 // table of all user positions
 // etc.
 
+//attempting to set up mui
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+//other imports
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_USER } from "../utils/queries";
@@ -26,11 +41,8 @@ const Dashboard = () => {
     purchaseQty: 0.0,
   });
 
-  console.log("QUERY USER: ", QUERY_USER);
-  console.log("data in dashboard", data, "\n loading", loading);
-
   const userData = data?.user || "userData not found";
-  console.log(userData);
+  console.log("userData", userData);
 
   useEffect(() => {
     return () => setUserPositions(userData.positions);
@@ -71,6 +83,70 @@ const Dashboard = () => {
     return <h2>LOADING...</h2>
   }
 
+  function Row(props: { row: ReturnType<typeof createData> }) {
+    const { row } = props;
+    const [open, setOpen] = React.useState(false);
+
+    return (
+      <React.Fragment>
+        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {row.name}
+          </TableCell>
+          <TableCell align="right">{row.calories}</TableCell>
+          <TableCell align="right">{row.fat}</TableCell>
+          <TableCell align="right">{row.carbs}</TableCell>
+          <TableCell align="right">{row.protein}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  History
+                </Typography>
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Customer</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                      <TableCell align="right">Total price ($)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.history.map((historyRow) => (
+                      <TableRow key={historyRow.date}>
+                        <TableCell component="th" scope="row">
+                          {historyRow.date}
+                        </TableCell>
+                        <TableCell>{historyRow.customerId}</TableCell>
+                        <TableCell align="right">{historyRow.amount}</TableCell>
+                        <TableCell align="right">
+                          {Math.round(historyRow.amount * row.price * 100) /
+                            100}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  }
+
   return (
     <div>
       {Auth.loggedIn() ? (
@@ -78,7 +154,28 @@ const Dashboard = () => {
       ) : (
         <h1>you are not authenticated</h1>
       )}
-      {userPositions && "<some mui set up needed></>"}
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Symbol</TableCell>
+              <TableCell align="right">Qty</TableCell>
+              <TableCell align="right">Purchase Date</TableCell>
+              <TableCell align="right">Purchase Price &nbsp;</TableCell>
+              <TableCell align="right">Amount Invested &nbsp;</TableCell>
+              <TableCell align="right">Current Price &nbsp;(g)</TableCell>
+              <TableCell align="right">% gain/loss &nbsp;</TableCell>
+              <TableCell align="right">$ gain/loss &nbsp;</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {userPositions.map((position) => (
+              <Row key={position.name} position={position} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

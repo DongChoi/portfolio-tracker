@@ -46,7 +46,6 @@ const LoginForm = () => {
       const { data } = await login({
         variables: { ...userFormData },
       });
-      console.log("logging in for handleFormSubmit", data);
       Auth.login(data.login.token);
     } catch (e) {
       console.error(e);
