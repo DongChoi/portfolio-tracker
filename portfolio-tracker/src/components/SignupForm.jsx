@@ -44,7 +44,6 @@ const SignupForm = () => {
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-      console.log(data);
       Auth.login(data.addUser.token);
     } catch (e) {
       console.error(e);
@@ -74,7 +73,7 @@ const SignupForm = () => {
             name="username"
             value={userFormData.username}
             onChange={handleInputChange}
-            style={{marginBottom: '5px'}}
+            style={{ marginBottom: "5px" }}
           />
           <TextField
             required
@@ -83,7 +82,7 @@ const SignupForm = () => {
             name="email"
             value={userFormData.email}
             onChange={handleInputChange}
-            style={{marginBottom: '5px'}}
+            style={{ marginBottom: "5px" }}
           />
           <TextField
             required
@@ -93,7 +92,7 @@ const SignupForm = () => {
             type="password"
             value={userFormData.password}
             onChange={handleInputChange}
-            style={{marginBottom: '5px'}}
+            style={{ marginBottom: "5px" }}
           />
           {showAlert && (
             <Alert severity="error">An error occurred. Please try again.</Alert>

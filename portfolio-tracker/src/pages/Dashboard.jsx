@@ -2,72 +2,74 @@
 
 // this is where we go when a user logs in / signs up
 // will include:
-    // form for user to add a new position
-    // table of all user positions
-    // etc.
+// form for user to add a new position
+// table of all user positions
+// etc.
 
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { QUERY_USER } from '../utils/queries';
-import { REMOVE_POSITION } from '../utils/mutations';
-import { SAVE_POSITION } from '../utils/mutations';
-import Auth from '../utils/auth';
+import React, { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { QUERY_USER } from "../utils/queries";
+import { REMOVE_POSITION } from "../utils/mutations";
+import { SAVE_POSITION } from "../utils/mutations";
+import Auth from "../utils/auth";
 
 const Dashboard = () => {
-    const { loading, e, data } = useQuery(QUERY_USER);
-    const [loggedIn, setLoggedIn] = useState(Auth.loggedIn())
-    const [removePosition, { err }] = useMutation(REMOVE_POSITION);
-    const [savePosition, { error }] = useMutation(SAVE_POSITION);
-    const [userPositions, setUserPositions] = useState([])
-    const [userFormInput, setUserFormInput] = useState({
-        purchaseDate: '',
-        purchasePrice: 0.00,
-        symbol: '',
-        purchaseQty: 0.00
-    });
-    
+  const { loading, data } = useQuery(QUERY_USER);
+  const [loggedIn, setLoggedIn] = useState(Auth.loggedIn());
+  const [removePosition, { err }] = useMutation(REMOVE_POSITION);
+  const [savePosition, { error }] = useMutation(SAVE_POSITION);
+  const [userPositions, setUserPositions] = useState([]);
+  const [userFormInput, setUserFormInput] = useState({
+    purchaseDate: "",
+    purchasePrice: 0.0,
+    symbol: "",
+    purchaseQty: 0.0,
+  });
 
-    const userData = data?.user || "userData not found";
-    console.log(userData)
+  console.log("QUERY USER: ", QUERY_USER);
+  console.log("data in dashboard", data, "\n loading", loading);
 
-    // useEffect(() => {
-    //     return () => setUserPositions(userData.positions)
-    // }, [userPositions, userData.positions])
+  const userData = data?.user || "userData not found";
+  console.log(userData);
 
-    // const handleRemovePosition = async (positionId) => {
-    //     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    //     if(!token) {
-    //         return false
-    //     };
+  useEffect(() => {
+    return () => setUserPositions(userData.positions);
+  }, [userPositions, userData.positions]);
 
-    //     try {
-    //         const { data } = await removePosition({
-    //             variables: { positionId }
-    //         });
-    //     } catch (e) {
-    //         console.error(e)
-    //     }
-    // };
-
-    // const handleSavePosition = async (userFormInput) => {
-    //     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    //     if(!token) {
-    //         return false
-    //     }
-
-    //     try {
-    //         const { data } = await savePosition({
-    //             variables: {userFormInput}
-    //         })
-    //         setUserPositions(userData.positions)
-    //     } catch (e) {
-    //         console.error(e)
-    //     }
-    // };
-
-    if (loading) {
-        return <h2>LOADING...</h2>
+  const handleRemovePosition = async (positionId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    if (!token) {
+      return false;
     }
+
+    try {
+      const { data } = await removePosition({
+        variables: { positionId },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSavePosition = async (userFormInput) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const { data } = await savePosition({
+        variables: { userFormInput },
+      });
+      setUserPositions(userData.positions);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  if (loading) {
+    return <h2>LOADING...</h2>
+  }
 
     if (e) {
         return `Error! ${e.message}`
@@ -80,8 +82,9 @@ const Dashboard = () => {
       ) : (
         <h1>you are not authenticated</h1>
       )}
+      {userPositions && "<some mui set up needed></>"}
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
