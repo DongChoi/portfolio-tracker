@@ -1,7 +1,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
-// const uuid = require("uuid/v1");
+const uuid = require("uuid/v1");
 const resolvers = {
   Query: {
     /*parent: represents  our application,

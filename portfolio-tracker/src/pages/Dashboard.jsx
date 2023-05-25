@@ -38,6 +38,7 @@ import { QUERY_USER } from "../utils/queries";
 import { REMOVE_POSITION } from "../utils/mutations";
 import { SAVE_POSITION } from "../utils/mutations";
 import Auth from "../utils/auth";
+import uuid from 'uuid/v1'
 
 const Dashboard = () => {
   const { loading, data } = useQuery(QUERY_USER);
@@ -58,7 +59,7 @@ const Dashboard = () => {
 
   /********************** Handle position functions **********************/
 
-  function handleRemovePositionFormSubmit() {}
+  // function handleRemovePositionFormSubmit() {}
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -82,6 +83,7 @@ const Dashboard = () => {
     try {
       const { data } = await savePosition({
         variables: {
+          positionId: uuid(),
           purchaseDate: date,
           symbol: userFormData.symbol,
           purchasePrice: parseFloat(userFormData.purchasePrice),

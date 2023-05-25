@@ -26,12 +26,14 @@ export const ADD_USER = gql`
 
 export const SAVE_POSITION = gql`
   mutation savePosition(
+    $positionId: String!
     $purchaseDate: String!
     $purchasePrice: Float!
     $symbol: String!
     $purchaseQty: Float!
   ) {
     savePosition(
+      positionId: $positionId
       purchaseDate: $purchaseDate
       purchasePrice: $purchasePrice
       symbol: $symbol
@@ -52,7 +54,7 @@ export const SAVE_POSITION = gql`
 `;
 
 export const REMOVE_POSITION = gql`
-  mutation removePosition($positionId: ID!) {
+  mutation removePosition($positionId: String!) {
     removePosition(positionId: $positionId) {
       _id
       username

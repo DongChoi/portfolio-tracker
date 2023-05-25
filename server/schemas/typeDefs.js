@@ -8,7 +8,7 @@ const typeDefs = gql`
     positions: [Position]
   }
   type Position {
-    positionId: ID!
+    positionId: String!
     purchaseDate: String!
     purchasePrice: Float!
     symbol: String!
@@ -25,12 +25,13 @@ const typeDefs = gql`
     login(username: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
     savePosition(
+      positionId: String!
       purchaseDate: String!
       purchasePrice: Float!
       symbol: String!
       purchaseQty: Float!
     ): User
-    removePosition(positionId: ID!): User
+    removePosition(positionId: String!): User
   }
 `;
 
