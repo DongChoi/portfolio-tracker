@@ -89,6 +89,7 @@ const SignupForm = () => {
             fullWidth
             label="Password"
             name="password"
+            type="password"
             value={userFormData.password}
             onChange={handleInputChange}
             style={{ marginBottom: "5px" }}
