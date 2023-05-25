@@ -71,10 +71,6 @@ const Dashboard = () => {
     return <h2>LOADING...</h2>
   }
 
-    if (e) {
-        return `Error! ${e.message}`
-    }
-
   return (
     <div>
       {Auth.loggedIn() ? (
