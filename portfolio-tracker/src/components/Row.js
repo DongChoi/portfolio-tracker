@@ -12,7 +12,7 @@ export default function Row({ position, handleRemovePosition, stockData }) {
   const purchaseDate = position.purchaseDate;
   const purchasePrice = position.purchasePrice;
   const currentPrice = stockData.price;
-  const totalInvested = purchaseQty * purchasePrice;
+  const totalInvested = (purchaseQty * purchasePrice).toFixed(2);
   const gainLossDollars = (currentPrice - purchasePrice) * purchaseQty;
   const gainOrLoss = gainLossDollars > 0 ? true : false;
   const gainLossPercentage = ((currentPrice - purchasePrice) / purchasePrice) * 100;
