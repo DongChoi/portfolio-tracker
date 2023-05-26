@@ -16,7 +16,7 @@ export default function Row({ position, handleRemovePosition, stockData }) {
   const gainLossDollars = (currentPrice - purchasePrice) * purchaseQty;
   const gainOrLoss = gainLossDollars > 0 ? true : false;
   const gainLossPercentage = ((currentPrice - purchasePrice) / purchasePrice) * 100;
-  const totalValue = currentPrice * purchaseQty
+  const totalValue = (currentPrice * purchaseQty).toFixed(2)
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
