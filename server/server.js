@@ -20,7 +20,7 @@ app.use(express.json());
 
 if(process.env.NODE_ENV === 'production') {
     // app.use(express.static(path.join(__dirname, 'portfolio-tracker/build')))
-    app.use(express.static('portfolio-tracker/public'))
+    app.use(express.static('portfolio-tracker/build'))
 }
 
 app.get('/', (req, res) => {
