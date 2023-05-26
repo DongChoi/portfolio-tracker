@@ -3,17 +3,24 @@ import React, { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-export default function Row(props) {
-  const { position, handleRemovePosition } = props;
+export default function Row({ position, handleRemovePosition, stockData }) {
   const [open, setOpen] = useState(false);
-
   function handleRemoveClick(positionId) {
     handleRemovePosition(positionId);
   }
+  const purchaseQty = position.purchaseQty;
+  const purchaseDate = position.purchaseDate;
+  const purchasePrice = position.purchasePrice;
+  const currentPrice = stockData.price;
+  const totalInvested = purchaseQty * purchasePrice;
+  const gainLossDollars = (currentPrice - purchasePrice) * purchaseQty;
+  const gainOrLoss = gainLossDollars > 0 ? true : false;
+  const gainLossPercentage = (currentPrice / purchasePrice) * 100;
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell>
+        {/* future implementation for getting a graph for api call */}
+        {/* <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -21,26 +28,39 @@ export default function Row(props) {
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
+        </TableCell> */}
         <TableCell component="th" scope="row">
           {position.symbol}
         </TableCell>
-        <TableCell align="right">{position.purchaseQty}</TableCell>
-        <TableCell align="right">{position.purchaseDate}</TableCell>
-        <TableCell align="right">{position.purchasePrice}</TableCell>
-        <TableCell align="right">
-          {position.purchasePrice * position.purchaseQty}
-        </TableCell>
-        <TableCell align="right">{"row.currentPrice"}</TableCell>
-        <TableCell align="right">{"row.gainloss%"}</TableCell>
-        <TableCell align="right">{"row.gainloss$"}</TableCell>
+        <TableCell align="right">{purchaseDate}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">{purchaseQty}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">{totalInvested}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">{purchasePrice}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">{currentPrice}&nbsp; &nbsp;&nbsp;</TableCell>
         <TableCell
+          style={gainOrLoss ? { color: "green" } : { color: "red" }}
           align="right"
-          onClick={() => {
-            handleRemoveClick(position.positionId);
-          }}
         >
-          X
+          {gainLossDollars > 0
+            ? gainLossPercentage.toFixed(4)
+            : (100 - gainLossPercentage).toFixed(4)}
+          % &nbsp;
+        </TableCell>
+        <TableCell
+          style={gainOrLoss ? { color: "green" } : { color: "red" }}
+          align="right"
+        >
+          {gainLossDollars.toFixed(4)}&nbsp;
+        </TableCell>
+        <TableCell align="right">
+          <button
+            onClick={() => {
+              handleRemoveClick(position.positionId);
+            }}
+            style={{ backgroundColor: "white", border: "0px" }}
+          >
+            X&nbsp;&nbsp;&nbsp;&nbsp;
+          </button>
         </TableCell>
       </TableRow>
       <TableRow>
