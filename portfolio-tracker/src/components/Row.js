@@ -16,6 +16,7 @@ export default function Row({ position, handleRemovePosition, stockData }) {
   const gainLossDollars = (currentPrice - purchasePrice) * purchaseQty;
   const gainOrLoss = gainLossDollars > 0 ? true : false;
   const gainLossPercentage = ((currentPrice - purchasePrice) / purchasePrice) * 100;
+  const totalValue = currentPrice * purchaseQty
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -34,23 +35,24 @@ export default function Row({ position, handleRemovePosition, stockData }) {
         </TableCell>
         <TableCell align="right">{purchaseDate}&nbsp;&nbsp;&nbsp;</TableCell>
         <TableCell align="right">{purchaseQty}&nbsp;&nbsp;&nbsp;</TableCell>
-        <TableCell align="right">{totalInvested}&nbsp;&nbsp;&nbsp;</TableCell>
-        <TableCell align="right">{purchasePrice}&nbsp;&nbsp;&nbsp;</TableCell>
-        <TableCell align="right">{currentPrice}&nbsp; &nbsp;&nbsp;</TableCell>
+        <TableCell align="right">${totalInvested}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">${purchasePrice}&nbsp;&nbsp;&nbsp;</TableCell>
+        <TableCell align="right">${currentPrice}&nbsp; &nbsp;&nbsp;</TableCell>
+        <TableCell align="right">${totalValue}&nbsp; &nbsp;&nbsp;</TableCell>
         <TableCell
           style={gainOrLoss ? { color: "green" } : { color: "red" }}
           align="right"
         >
           {gainLossDollars > 0
-            ? gainLossPercentage.toFixed(4)
-            : (100 - gainLossPercentage).toFixed(4)}
+            ? gainLossPercentage.toFixed(2)
+            : (gainLossPercentage).toFixed(2)}
           % &nbsp;
         </TableCell>
         <TableCell
           style={gainOrLoss ? { color: "green" } : { color: "red" }}
           align="right"
         >
-          {gainLossDollars.toFixed(4)}&nbsp;
+          ${gainLossDollars.toFixed(2)}&nbsp;
         </TableCell>
         <TableCell align="right">
           <button

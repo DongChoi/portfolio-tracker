@@ -281,6 +281,7 @@ const Dashboard = () => {
               <TableCell align="right">Amount Invested &nbsp;</TableCell>
               <TableCell align="right">Purchase Price &nbsp;</TableCell>
               <TableCell align="right">Current Price &nbsp;</TableCell>
+              <TableCell align="right">Position Value &nbsp;</TableCell>
               <TableCell align="right">% gain/loss &nbsp;</TableCell>
               <TableCell align="right">$ gain/loss &nbsp;</TableCell>
               <TableCell align="right">remove &nbsp;</TableCell>
