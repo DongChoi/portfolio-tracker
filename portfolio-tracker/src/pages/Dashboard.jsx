@@ -9,8 +9,6 @@
 
 //attempting to set up mui
 import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,33 +17,32 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-//forms to add and remove positions
-
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
-import Link from "@mui/material/Link";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+//
+import Row from "../components/Row";
 //other imports
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_USER } from "../utils/queries";
 import { REMOVE_POSITION } from "../utils/mutations";
 import { SAVE_POSITION } from "../utils/mutations";
+import symbols from "../data/symbolObject.js";
 import Auth from "../utils/auth";
 import uuid from "uuid/v1";
-
 const Dashboard = () => {
   const { loading, data } = useQuery(QUERY_USER);
-  const [loggedIn, setLoggedIn] = useState(Auth.loggedIn());
-  //TODO
+  /* NOTE: Do we need this? */
+  // const [loggedIn, setLoggedIn] = useState(Auth.loggedIn());
+
   const [removePosition, { err }] = useMutation(REMOVE_POSITION);
   const [savePosition, { error }] = useMutation(SAVE_POSITION);
+  const [showAlert, setShowAlert] = useState("");
   const [userPositions, setUserPositions] = useState(
     data ? data.user.positions : []
   );
@@ -58,6 +55,7 @@ const Dashboard = () => {
 
   const userData = data?.user || "userData not found";
   useEffect(() => {
+    //TODO: more logic will go into this
     if (data && data.user) {
       setUserPositions(data.user.positions);
     }
@@ -70,8 +68,6 @@ const Dashboard = () => {
   console.log(userData);
   /********************** Handle position functions **********************/
 
-  // function handleRemovePositionFormSubmit() {}
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
@@ -83,20 +79,49 @@ const Dashboard = () => {
     setDate(dateString);
   };
 
+  const validateFormData = () => {
+    let errorMsg = "please enter a valid ";
+    const errs = [];
+    if (!date) {
+      errs.push("date");
+    }
+    if (!symbols[userFormData.symbol.toUpperCase()]) {
+      errs.push("symbol");
+    }
+    if (
+      !parseFloat(userFormData.purchasePrice) ||
+      parseFloat(userFormData.purchasePrice) < 0
+    ) {
+      errs.push("purchase price");
+    }
+    if (
+      !parseFloat(userFormData.purchaseQty) ||
+      parseFloat(userFormData.purchaseQty) < 0
+    ) {
+      errs.push("purchase quantity");
+    }
+    if (errs.length > 0) {
+      setShowAlert((errorMsg += errs.join(", ")));
+      return false;
+    }
+    return true;
+  };
   const handleAddPositionSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    const formValidation = validateFormData();
+    if (form.checkValidity() === false || !formValidation) {
       event.preventDefault();
       event.stopPropagation();
+      return;
     }
-
     try {
+      setShowAlert("");
       const { data } = await savePosition({
         variables: {
           positionId: uuid(),
           purchaseDate: date,
-          symbol: userFormData.symbol,
+          symbol: userFormData.symbol.toUpperCase(),
           purchasePrice: parseFloat(userFormData.purchasePrice),
           purchaseQty: parseFloat(userFormData.purchaseQty),
         },
@@ -104,7 +129,6 @@ const Dashboard = () => {
     } catch (e) {
       console.error(e);
     }
-    setUserPositions([...data.user.positions]);
     setUserFormData({
       purchasePrice: 0.0,
       symbol: "",
@@ -113,11 +137,6 @@ const Dashboard = () => {
   };
 
   const handleRemovePosition = async (positionId) => {
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    if (!token) {
-      return false;
-    }
-
     try {
       const { data } = await removePosition({
         variables: { positionId },
@@ -126,82 +145,6 @@ const Dashboard = () => {
       console.error(e);
     }
   };
-
-  {
-    /* {userPositions.map((position) => (
-              <Row key={position.name} position={position} />
-            ))} */
-  }
-  //this is one fucking row
-  function Row(props) {
-    const { position } = props;
-    const [open, setOpen] = useState(false);
-    //   do calculations...
-    //(currentprice/purchaseprice) * amount invested
-    return (
-      <React.Fragment>
-        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-          <TableCell>
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
-          <TableCell component="th" scope="row">
-            {position.symbol}
-          </TableCell>
-          <TableCell align="right">{position.purchaseQty}</TableCell>
-          <TableCell align="right">{position.purchaseDate}</TableCell>
-          <TableCell align="right">{position.purchasePrice}</TableCell>
-          <TableCell align="right">
-            {position.purchasePrice * position.purchaseQty}
-          </TableCell>
-          <TableCell align="right">{"row.currentPrice"}</TableCell>
-          <TableCell align="right">{"row.gainloss%"}</TableCell>
-          <TableCell align="right">{"row.gainloss$"}</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              {/* <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  History
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Customer</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Total price ($)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.history.map((historyRow) => (
-                      <TableRow key={historyRow.date}>
-                        <TableCell component="th" scope="row">
-                          {historyRow.date}
-                        </TableCell>
-                        <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell align="right">{historyRow.amount}</TableCell>
-                        <TableCell align="right">
-                          {Math.round(historyRow.amount * row.price * 100) /
-                            100}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Box> */}
-            </Collapse>
-          </TableCell>
-        </TableRow>
-      </React.Fragment>
-    );
-  }
 
   return (
     <div>
@@ -241,7 +184,7 @@ const Dashboard = () => {
             name="purchasePrice"
             value={userFormData.purchasePrice}
             onChange={handleInputChange}
-            style={{ marginBottom: "5px" }}
+            style={{ marginBottom: "-3px" }}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
@@ -254,9 +197,7 @@ const Dashboard = () => {
             </DemoContainer>
           </LocalizationProvider>
 
-          {/* {showAlert && (
-            <Alert severity="error">An error occurred. Please try again.</Alert>
-          )} */}
+          {showAlert && <Alert severity="error">{showAlert}</Alert>}
           <Button type="submit" variant="contained" color="primary">
             Add Position
           </Button>
@@ -269,21 +210,25 @@ const Dashboard = () => {
           <TableHead>
             <TableRow>
               <TableCell />
-              <TableCell>Symbol</TableCell>
-              <TableCell align="right">Qty</TableCell>
-              <TableCell align="right">Purchase Date</TableCell>
+              <TableCell align="right">Symbol &nbsp;</TableCell>
+              <TableCell align="right">Qty &nbsp;</TableCell>
+              <TableCell align="right">Purchase Date &nbsp;</TableCell>
               <TableCell align="right">Purchase Price &nbsp;</TableCell>
               <TableCell align="right">Amount Invested &nbsp;</TableCell>
               <TableCell align="right">Current Price &nbsp;</TableCell>
               <TableCell align="right">% gain/loss &nbsp;</TableCell>
               <TableCell align="right">$ gain/loss &nbsp;</TableCell>
-              <TableCell />
+              <TableCell align="right">remove &nbsp;</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {userPositions &&
               userPositions.map((position) => (
-                <Row key={position.positionId} position={position} />
+                <Row
+                  handleRemovePosition={handleRemovePosition}
+                  key={position.positionId}
+                  position={position}
+                />
               ))}
           </TableBody>
         </Table>
