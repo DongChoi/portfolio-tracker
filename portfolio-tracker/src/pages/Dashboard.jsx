@@ -38,7 +38,7 @@ import { QUERY_USER } from "../utils/queries";
 import { REMOVE_POSITION } from "../utils/mutations";
 import { SAVE_POSITION } from "../utils/mutations";
 import Auth from "../utils/auth";
-import uuid from 'uuid/v1'
+import uuid from "uuid/v1";
 
 const Dashboard = () => {
   const { loading, data } = useQuery(QUERY_USER);
@@ -46,7 +46,9 @@ const Dashboard = () => {
   //TODO
   const [removePosition, { err }] = useMutation(REMOVE_POSITION);
   const [savePosition, { error }] = useMutation(SAVE_POSITION);
-  const [userPositions, setUserPositions] = useState([]);
+  const [userPositions, setUserPositions] = useState(
+    data ? data.user.positions : []
+  );
   const [date, setDate] = useState("");
   const [userFormData, setUserFormData] = useState({
     purchasePrice: 0.0,
@@ -55,8 +57,17 @@ const Dashboard = () => {
   });
 
   const userData = data?.user || "userData not found";
-  console.log("userData", userData);
+  useEffect(() => {
+    if (data && data.user) {
+      setUserPositions(data.user.positions);
+    }
+  }, [data]);
 
+  if (loading) {
+    return <h2>LOADING...</h2>;
+  }
+
+  console.log(userData);
   /********************** Handle position functions **********************/
 
   // function handleRemovePositionFormSubmit() {}
@@ -72,7 +83,7 @@ const Dashboard = () => {
     setDate(dateString);
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleAddPositionSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -93,17 +104,13 @@ const Dashboard = () => {
     } catch (e) {
       console.error(e);
     }
-
+    setUserPositions([...data.user.positions]);
     setUserFormData({
       purchasePrice: 0.0,
       symbol: "",
       purchaseQty: 0.0,
     });
   };
-
-  useEffect(() => {
-    return () => setUserPositions(userData.positions);
-  }, [userPositions, userData.positions]);
 
   const handleRemovePosition = async (positionId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -120,90 +127,81 @@ const Dashboard = () => {
     }
   };
 
-  const handleSavePosition = async (userFormInput) => {
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    if (!token) {
-      return false;
-    }
-
-    try {
-      const { data } = await savePosition({
-        variables: { userFormInput },
-      });
-      setUserPositions(userData.positions);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  if (loading) {
-    return <h2>LOADING...</h2>;
+  {
+    /* {userPositions.map((position) => (
+              <Row key={position.name} position={position} />
+            ))} */
   }
-
-  // function Row(props: { row: ReturnType<typeof createData> }) {
-  //   const { row } = props;
-  //   const [open, setOpen] = React.useState(false);
-  // //   do calculations...
-  //        //(currentprice/purchaseprice) * amount invested
-  //   return (
-  //     <React.Fragment>
-  //       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-  //         <TableCell>
-  //           <IconButton
-  //             aria-label="expand row"
-  //             size="small"
-  //             onClick={() => setOpen(!open)}
-  //           >
-  //             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-  //           </IconButton>
-  //         </TableCell>
-  //         <TableCell component="th" scope="row">
-  //           {row.name}
-  //         </TableCell>
-  //         <TableCell align="right">{row.calories}</TableCell>
-  //         <TableCell align="right">{row.fat}</TableCell>
-  //         <TableCell align="right">{row.carbs}</TableCell>
-  //         <TableCell align="right">{row.protein}</TableCell>
-  //       </TableRow>
-  //       <TableRow>
-  //         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-  //           <Collapse in={open} timeout="auto" unmountOnExit>
-  //             <Box sx={{ margin: 1 }}>
-  //               <Typography variant="h6" gutterBottom component="div">
-  //                 History
-  //               </Typography>
-  //               <Table size="small" aria-label="purchases">
-  //                 <TableHead>
-  //                   <TableRow>
-  //                     <TableCell>Date</TableCell>
-  //                     <TableCell>Customer</TableCell>
-  //                     <TableCell align="right">Amount</TableCell>
-  //                     <TableCell align="right">Total price ($)</TableCell>
-  //                   </TableRow>
-  //                 </TableHead>
-  //                 <TableBody>
-  //                   {row.history.map((historyRow) => (
-  //                     <TableRow key={historyRow.date}>
-  //                       <TableCell component="th" scope="row">
-  //                         {historyRow.date}
-  //                       </TableCell>
-  //                       <TableCell>{historyRow.customerId}</TableCell>
-  //                       <TableCell align="right">{historyRow.amount}</TableCell>
-  //                       <TableCell align="right">
-  //                         {Math.round(historyRow.amount * row.price * 100) /
-  //                           100}
-  //                       </TableCell>
-  //                     </TableRow>
-  //                   ))}
-  //                 </TableBody>
-  //               </Table>
-  //             </Box>
-  //           </Collapse>
-  //         </TableCell>
-  //       </TableRow>
-  //     </React.Fragment>
-  //   );
-  // }
+  //this is one fucking row
+  function Row(props) {
+    const { position } = props;
+    const [open, setOpen] = useState(false);
+    //   do calculations...
+    //(currentprice/purchaseprice) * amount invested
+    return (
+      <React.Fragment>
+        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {position.symbol}
+          </TableCell>
+          <TableCell align="right">{position.purchaseQty}</TableCell>
+          <TableCell align="right">{position.purchaseDate}</TableCell>
+          <TableCell align="right">{position.purchasePrice}</TableCell>
+          <TableCell align="right">
+            {position.purchasePrice * position.purchaseQty}
+          </TableCell>
+          <TableCell align="right">{"row.currentPrice"}</TableCell>
+          <TableCell align="right">{"row.gainloss%"}</TableCell>
+          <TableCell align="right">{"row.gainloss$"}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              {/* <Box sx={{ margin: 1 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  History
+                </Typography>
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Customer</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                      <TableCell align="right">Total price ($)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.history.map((historyRow) => (
+                      <TableRow key={historyRow.date}>
+                        <TableCell component="th" scope="row">
+                          {historyRow.date}
+                        </TableCell>
+                        <TableCell>{historyRow.customerId}</TableCell>
+                        <TableCell align="right">{historyRow.amount}</TableCell>
+                        <TableCell align="right">
+                          {Math.round(historyRow.amount * row.price * 100) /
+                            100}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box> */}
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    );
+  }
 
   return (
     <div>
@@ -216,7 +214,7 @@ const Dashboard = () => {
           justifyContent: "center",
         }}
       >
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleAddPositionSubmit}>
           <TextField
             required
             fullWidth
@@ -251,7 +249,7 @@ const Dashboard = () => {
                 name="purchaseDate"
                 value={userFormData.purchaseDate}
                 onChange={handleCalanderChange}
-                label="Basic date picker"
+                label="Purchase Date"
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -263,12 +261,6 @@ const Dashboard = () => {
             Add Position
           </Button>
         </form>
-        {/* <Typography variant="body2" align="center" mt={2}>
-          Already a User?{" "}
-          <Link href="/" color="primary">
-            Login instead.
-          </Link>
-        </Typography> */}
       </Box>
 
       {/****************************** table ****************************/}
@@ -289,9 +281,10 @@ const Dashboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {userPositions.map((position) => (
-              <Row key={position.name} position={position} />
-            ))} */}
+            {userPositions &&
+              userPositions.map((position) => (
+                <Row key={position.positionId} position={position} />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

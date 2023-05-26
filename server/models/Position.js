@@ -11,7 +11,7 @@ const positionSchema = new Schema({
     required: true,
   },
   purchasePrice: {
-    type: Schema.Types.Decimal128,
+    type: Number,
     required: true,
   },
   symbol: {
@@ -19,7 +19,7 @@ const positionSchema = new Schema({
     required: true,
   },
   purchaseQty: {
-    type: Schema.Types.Decimal128,
+    type: Number,
     required: true,
   },
 });

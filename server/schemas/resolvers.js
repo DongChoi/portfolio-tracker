@@ -1,7 +1,8 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
-const uuid = require("uuid/v1");
+// const uuid = require("uuid/v1");
+// const { Decimal128 } = require("bson");
 const resolvers = {
   Query: {
     /*parent: represents  our application,
@@ -42,12 +43,26 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    savePosition: async (parent, { purchaseDate, purchasePrice, symbol, purchaseQty }, context) => {
+    savePosition: async (
+      parent,
+      { positionId, purchaseDate, purchasePrice, symbol, purchaseQty },
+      context
+    ) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
           //push into positions data
-          { $push: { positions: { positionId: uuid(), purchaseDate: purchaseDate, purchasePrice: parseFloat(purchasePrice), symbol: symbol, purchaseQty: parseFloat(purchaseQty) } } },
+          {
+            $push: {
+              positions: {
+                positionId: positionId,
+                purchaseDate: purchaseDate,
+                purchasePrice: purchasePrice,
+                symbol: symbol,
+                purchaseQty: purchaseQty,
+              },
+            },
+          },
           //returns updated or "new" object
           { new: true }
         );
