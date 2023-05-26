@@ -100,7 +100,7 @@ const Dashboard = () => {
         },
         {}
       );
-      console.log("restructured stock data", restructuredStockData);
+      // console.log("restructured stock data", restructuredStockData);
       setUserPositions(data.user.positions);
       setStockData(restructuredStockData);
     }
