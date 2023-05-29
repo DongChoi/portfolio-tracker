@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "portfolio-tracker/package.json", "use": "@vercel/static-build" },
+    { "src": "server/server.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server/server.js" },
+    { "src": "/(.*)", "dest": "portfolio-tracker/$1" }
+  ]
+}
